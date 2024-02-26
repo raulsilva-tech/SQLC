@@ -1,0 +1,39 @@
+
+//download it
+curl -L https://github.com/golang-migrate/migrate/releases/download/v4.17.0/migrate.linux-amd64.tar.gz | tar xvz
+
+//copy it to go path bin
+cp -r migrate $GOPATH/bin/migrate
+
+//if migrate command does not work
+//add the folliwng lines to ~./bashrc
+export GOPATH=$HOME/go
+export PATH=$PATH:$GOPATH/bin
+
+ migrate create -ext=sql -dir=sql/migrations -seq init
+
+ init up:
+ - add all sql commands to be executed
+
+ init down:
+ - all all sql commands to be executed to revert what was done in the up file
+
+//create docker compose file and execute it:
+ docker-compose up -d
+
+ //execute up file
+ migrate -path=sql/migrations -database "mysql://root:root@tcp(localhost:3306)/courses" -verbose up
+
+ //exec mysql bash:
+ docker-compose exec mysql bash
+
+ mysql -uroot -p courses
+
+//execute down file to revert what was done in the up file
+ migrate -path=sql/migrations -database "mysql://root:root@tcp(localhost:3306)/courses" -verbose up
+
+//instal SQLC
+go install github.com/sqlc-dev/sqlc/cmd/sqlc@latest
+
+create sqlc.yaml file
+
